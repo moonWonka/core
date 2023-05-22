@@ -38,7 +38,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEV')
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,7 +47,37 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+PROJECT_APPS = [
+
+]
+
+THIRD_PARTY_APPS = [
+    'corsheaders',
+    'rest_framework',
+    'ckeditor',
+    'ckeditor_uploader'
+]
+
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+
+#CKEDITOR CONFIGURATION
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],      
+            ['RemoveFormat', 'Source']
+        ],
+        'autoParagraph': False # Disable automatic p tags
+    },
+}
+
+CKEDITOR_UPLOAD_PATH = '/media/' # Path to upload images
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # CORS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -132,3 +162,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')
+
+    # Database
+
+    DATABASES = {
+        'default': env.db('DATABASE_URL'),#configura la base de datos en Django utilizando la biblioteca django-environ para obtener la configuración de la base de datos a partir de la variable de entorno
+    }
+    DATABASES['default']['ATOMIC_REQUESTS'] = True #garantiza que todas las operaciones de base de datos realizadas durante una solicitud se realicen en una única transacción.
